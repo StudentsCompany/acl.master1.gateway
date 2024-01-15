@@ -22,18 +22,25 @@ spring:
             - Path=/users/** # catch all the call of this app to /users/**
           filters:
             - StripPrefix=1 # remove 1 path level (means that the gateway we remove the "users" in the path) => call to /users/wilfried => /wilfried
-            - AuthenticationFilter  # We are telling the gateway to do our filter before redirect any request. 
-        
+            - AuthenticationFilter  # We are telling the gateway to do our filter before redirect any request.
+
+        - id: game1 # We give the id 'users' when the user acl-master1-user is regiter
+          uri: lb://acl.master1.game1        #http://localhost:8083
+          predicates:
+            - Path=/game1/** # catch all the call of this app to /users/**
+          filters:
+            - StripPrefix=1 # remove 1 path level (means that the gateway we remove the "users" in the path) => call to /users/wilfried => /wilfried
+            - AuthenticationFilter
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
           
 # Registry (spring eureka) config
-eureka: 
-  client:
-    service-url:
-      default-zone: ${REGISTRY_URI:http://localhost:8761/eureka} # We told this app to register itself in the registry app
-    instance:
-      preferIpAddress: true
+  eureka:
+    client:
+      service-url:
+        default-zone: ${REGISTRY_URI:http://localhost:8761/eureka} # We told this app to register itself in the registry app
+      instance:
+        preferIpAddress: true
 logging:
   level:
     root: INFO

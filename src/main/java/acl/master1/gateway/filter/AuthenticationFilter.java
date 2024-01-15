@@ -32,12 +32,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 		
 		return ((exchange, chain)->{
 			// Check first the request we are getting
+			System.out.println("--------------------------------------------------");
+			System.out.println(exchange.getRequest().getPath().toString());
 			if(routerValidator.isSecure.test(exchange.getRequest())){
-				// Check Second : Is the header contain a token ?
+				// Check Second : Does the header contain a token ?
 				if( ! exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-					throw new RuntimeException ("Missing authorization in he header");
+					throw new RuntimeException ("Missing authorization in the header");
 				}
-				
+				System.out.println("111111111111111");
 				String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 				
 				if(authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -61,8 +63,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 					 */ 
 					jwtService.validateToken(authHeader);
 				} catch (Exception e) {
-					System.out.println("Invalide Access");
-					throw new RuntimeException("un authorized access to the app");
+					System.out.println("Invalid Access");
+					throw new RuntimeException("unauthorized access to the app");
 				}
 			}
 			
